@@ -7,19 +7,36 @@
 //
 
 import UIKit
+import CoreData
 
-class ViewController: UIViewController {
+
+class ViewController: UIViewController, UITextFieldDelegate{
     
     // MARK: Properties
+    
+    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     @IBOutlet weak var textField: UITextField!
     
     @IBOutlet weak var textLabel: UILabel!
     
+    @IBOutlet weak var age: UITextField!
+    @IBOutlet weak var lastName: UITextField!
+    @IBOutlet weak var firstName: UITextField!
     var controller:UIAlertController?
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool // called when 'return' key pressed. return NO to ignore.
+    {
+        textField.resignFirstResponder()
+        return true;
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.textField.delegate = self
+        self.age.delegate = self
+        self.lastName.delegate = self
+        self.firstName.delegate = self
         do {
             let path = NSTemporaryDirectory() + "savedText.txt"
         
@@ -66,6 +83,64 @@ class ViewController: UIViewController {
         
         controller!.addAction(action)
         self.presentViewController(controller!, animated: true, completion: nil)
+    }
+    func createNewPersonWithFirstName(firstName: String,
+        lastName :String,
+        age: Int) -> Bool{
+            
+            let newPerson =
+            NSEntityDescription.insertNewObjectForEntityForName("Person",
+                inManagedObjectContext: managedObjectContext) as! CoreDataSample.Person
+            
+            (newPerson.firstName, newPerson.lastName, newPerson.age) =
+                (firstName, lastName, age)
+            
+            do{
+                try managedObjectContext.save()
+            } catch let error as NSError{
+                print("Failed to save the new person. Error = \(error)")
+            }
+            
+            return false
+            
+    }
+    @IBAction func savePerson(sender: UIButton) {
+        createNewPersonWithFirstName(firstName.text!,lastName:  lastName.text!,age:  Int(age.text!)!)
+        showAlert(firstName.text! + " " + lastName.text!)
+        
+    }
+    @IBAction func loadPerson(sender: UIButton) {
+        
+        var first = true
+        
+        /* Create the fetch request first */
+        let fetchRequest = NSFetchRequest(entityName: "Person")
+        
+        let ageSort = NSSortDescriptor(key: "age", ascending: true)
+        
+        let firstNameSort = NSSortDescriptor(key: "firstName", ascending: true)
+        
+        fetchRequest.sortDescriptors = [ageSort, firstNameSort]
+        
+        /* And execute the fetch request on the context */
+        do{
+            let persons = try managedObjectContext.executeFetchRequest(fetchRequest) as! [Person]
+            for person in persons{
+                if(first) {
+                    firstName.text = person.firstName
+                    lastName.text = person.lastName
+                    age.text = String(person.age)
+                    first = false
+                }
+                
+                print("First Name = \(person.firstName)")
+                print("Last Name = \(person.lastName)")
+                print("Age = \(person.age)")
+                
+            }
+        } catch let error as NSError{
+            print(error)
+        }
     }
 }
 

@@ -35,10 +35,42 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="CiP-H7-WCg">
+                                <rect key="frame" x="59" y="243" width="221" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="L12-0z-KoO">
+                                <rect key="frame" x="59" y="378" width="221" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yur-oL-vQa">
+                                <rect key="frame" x="127" y="433" width="85" height="30"/>
+                                <state key="normal" title="Save Person"/>
+                                <connections>
+                                    <action selector="savePerson:" destination="BYZ-38-t0r" eventType="touchUpInside" id="rrm-Hr-qfs"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3Nk-JO-CHY">
+                                <rect key="frame" x="126" y="471" width="86" height="30"/>
+                                <state key="normal" title="Load Person"/>
+                                <connections>
+                                    <action selector="loadPerson:" destination="BYZ-38-t0r" eventType="touchUpInside" id="BOE-hV-Szy"/>
+                                </connections>
+                            </button>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="bcy-yC-0J4">
+                                <rect key="frame" x="59" y="308" width="221" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <connections>
+                        <outlet property="age" destination="L12-0z-KoO" id="zmj-TT-4AV"/>
+                        <outlet property="firstName" destination="CiP-H7-WCg" id="6ln-Fr-5Nj"/>
+                        <outlet property="lastName" destination="bcy-yC-0J4" id="Bab-r8-y5e"/>
                         <outlet property="textField" destination="Kzw-em-bPE" id="3Tr-sc-L1F"/>
                         <outlet property="textLabel" destination="Yhh-yV-PZm" id="9vn-IN-jS1"/>
                     </connections>
