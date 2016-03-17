@@ -16,6 +16,8 @@ class ViewController: UIViewController, UITextFieldDelegate{
     
     let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
+    
+    
     @IBOutlet weak var textField: UITextField!
     
     @IBOutlet weak var textLabel: UILabel!
@@ -33,6 +35,7 @@ class ViewController: UIViewController, UITextFieldDelegate{
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        let prefs = NSUserDefaults.standardUserDefaults()
         self.textField.delegate = self
         self.age.delegate = self
         self.lastName.delegate = self
@@ -46,6 +49,14 @@ class ViewController: UIViewController, UITextFieldDelegate{
             textLabel.text = "No file saved yet!"
             print(error)
         }
+        
+        if let savedText = prefs.stringForKey("savedText"){
+            print("NSUserDefaults contains: " + savedText)
+        }else{
+            //Nothing stored in NSUserDefaults yet. Set a value.
+            print("Nothing stored yet in NSUserDefaults")
+        }
+        
     }
     
     override func didReceiveMemoryWarning() {
@@ -67,6 +78,8 @@ class ViewController: UIViewController, UITextFieldDelegate{
         } catch let error as NSError {
             print("An error occurred: \(error)")
         }
+        let prefs = NSUserDefaults.standardUserDefaults()
+        prefs.setValue(someText, forKey: "savedText")
         
     }
     
