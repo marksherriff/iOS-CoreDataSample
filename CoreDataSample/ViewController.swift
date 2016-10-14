@@ -14,7 +14,7 @@ class ViewController: UIViewController, UITextFieldDelegate{
     
     // MARK: Properties
     
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    let managedObjectContext = (UIApplication.shared.delegate as! AppDelegate).managedObjectContext
     
     
     
@@ -27,7 +27,7 @@ class ViewController: UIViewController, UITextFieldDelegate{
     @IBOutlet weak var firstName: UITextField!
     var controller:UIAlertController?
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool // called when 'return' key pressed. return NO to ignore.
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool // called when 'return' key pressed. return NO to ignore.
     {
         textField.resignFirstResponder()
         return true;
@@ -35,7 +35,7 @@ class ViewController: UIViewController, UITextFieldDelegate{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let prefs = NSUserDefaults.standardUserDefaults()
+        let prefs = UserDefaults.standard
         self.textField.delegate = self
         self.age.delegate = self
         self.lastName.delegate = self
@@ -43,14 +43,14 @@ class ViewController: UIViewController, UITextFieldDelegate{
         do {
             let path = NSTemporaryDirectory() + "savedText.txt"
         
-            let readString = try String(contentsOfFile: path, encoding: NSUTF8StringEncoding)
+            let readString = try String(contentsOfFile: path, encoding: String.Encoding.utf8)
             textLabel.text = readString
         } catch let error as NSError {
             textLabel.text = "No file saved yet!"
             print(error)
         }
         
-        if let savedText = prefs.stringForKey("savedText"){
+        if let savedText = prefs.string(forKey: "savedText"){
             print("NSUserDefaults contains: " + savedText)
         }else{
             //Nothing stored in NSUserDefaults yet. Set a value.
@@ -66,47 +66,47 @@ class ViewController: UIViewController, UITextFieldDelegate{
     
     // MARK: Actions
     
-    @IBAction func saveButton(sender: UIButton) {
+    @IBAction func saveButton(_ sender: UIButton) {
         let someText = textField.text!
         let destinationPath = NSTemporaryDirectory() +  "savedText.txt"
         do {
-            try someText.writeToFile(destinationPath,
+            try someText.write(toFile: destinationPath,
                 atomically: true,
-                encoding: NSUTF8StringEncoding)
-            showAlert(someText)
+                encoding: String.Encoding.utf8)
+            showAlert(someText as NSString)
             print("Successfully stored the file at path \(destinationPath)")
         } catch let error as NSError {
             print("An error occurred: \(error)")
         }
-        let prefs = NSUserDefaults.standardUserDefaults()
+        let prefs = UserDefaults.standard
         prefs.setValue(someText, forKey: "savedText")
         
     }
     
-    func showAlert(text: NSString) {
+    func showAlert(_ text: NSString) {
         controller = UIAlertController(title: "Saved Text",
             message: (text as String) + " was saved!",
-            preferredStyle: .Alert)
+            preferredStyle: .alert)
         
         let action = UIAlertAction(title: "Done",
-            style: UIAlertActionStyle.Default,
+            style: UIAlertActionStyle.default,
             handler: {(paramAction:UIAlertAction!) in
                 print((text as String) + " was saved!", terminator: "")
         })
         
         controller!.addAction(action)
-        self.presentViewController(controller!, animated: true, completion: nil)
+        self.present(controller!, animated: true, completion: nil)
     }
-    func createNewPersonWithFirstName(firstName: String,
+    func createNewPersonWithFirstName(_ firstName: String,
         lastName :String,
         age: Int) -> Bool{
             
             let newPerson =
-            NSEntityDescription.insertNewObjectForEntityForName("Person",
-                inManagedObjectContext: managedObjectContext) as! CoreDataSample.Person
+            NSEntityDescription.insertNewObject(forEntityName: "Person",
+                into: managedObjectContext) as! CoreDataSample.Person
             
             (newPerson.firstName, newPerson.lastName, newPerson.age) =
-                (firstName, lastName, age)
+                (firstName, lastName, NSNumber(age))
             
             do{
                 try managedObjectContext.save()
@@ -117,12 +117,12 @@ class ViewController: UIViewController, UITextFieldDelegate{
             return false
             
     }
-    @IBAction func savePerson(sender: UIButton) {
+    @IBAction func savePerson(_ sender: UIButton) {
         createNewPersonWithFirstName(firstName.text!,lastName:  lastName.text!,age:  Int(age.text!)!)
         showAlert(firstName.text! + " " + lastName.text!)
         
     }
-    @IBAction func loadPerson(sender: UIButton) {
+    @IBAction func loadPerson(_ sender: UIButton) {
         
         var first = true
         
@@ -137,7 +137,7 @@ class ViewController: UIViewController, UITextFieldDelegate{
         
         /* And execute the fetch request on the context */
         do{
-            let persons = try managedObjectContext.executeFetchRequest(fetchRequest) as! [Person]
+            let persons = try managedObjectContext.fetch(fetchRequest) as! [Person]
             for person in persons{
                 if(first) {
                     firstName.text = person.firstName
